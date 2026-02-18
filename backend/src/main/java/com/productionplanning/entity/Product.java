@@ -20,7 +20,7 @@ public class Product extends PanacheEntity {
 
     @NotNull(message = "Value is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Value must be greater than zero")
-    @Column(nullable = false, precision = 15, scale = 2)
+    @Column(name = "product_value", nullable = false, precision = 15, scale = 2)
     public BigDecimal value;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
