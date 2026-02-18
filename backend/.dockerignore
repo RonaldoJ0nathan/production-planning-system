@@ -1,0 +1,2 @@
+# Ignore target folder (build output) but allow dev mode source files
+target/
