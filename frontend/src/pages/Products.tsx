@@ -43,13 +43,13 @@ export default function Products() {
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this product? All its material links will be lost.')) {
+    if (window.confirm('Tem certeza de que deseja excluir este produto? Semua as associações com matérias-primas serão perdidas.')) {
       try {
         await deleteProduct(id).unwrap();
-        toast.success('Product deleted successfully');
+        toast.success('Produto excluído com sucesso');
       } catch (err) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        toast.error((err as any)?.data?.message || 'Failed to delete product');
+        toast.error((err as any)?.data?.message || 'Falha ao excluir produto');
       }
     }
   };
@@ -65,8 +65,8 @@ export default function Products() {
   if (isError) {
     return (
       <Box textAlign="center" mt={10}>
-        <Typography color="error">Failed to load products.</Typography>
-        <Button onClick={() => refetch()} sx={{ mt: 2 }}>Retry</Button>
+        <Typography color="error">Falha ao carregar produtos.</Typography>
+        <Button onClick={() => refetch()} sx={{ mt: 2 }}>Tentar Novamente</Button>
       </Box>
     );
   }
@@ -75,14 +75,14 @@ export default function Products() {
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Typography variant="h4" fontWeight={700}>
-          Products
+          Produtos
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleOpenNew}
         >
-          Add Product
+          Adicionar Produto
         </Button>
       </Box>
 
@@ -92,16 +92,16 @@ export default function Products() {
             <TableHead>
               <TableRow>
                 <TableCell><b>ID</b></TableCell>
-                <TableCell><b>Product Name</b></TableCell>
-                <TableCell align="right"><b>Value ($)</b></TableCell>
-                <TableCell align="center"><b>Actions</b></TableCell>
+                <TableCell><b>Nome do Produto</b></TableCell>
+                <TableCell align="right"><b>Valor Sugerido (R$)</b></TableCell>
+                <TableCell align="center"><b>Ações</b></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {products?.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} align="center" sx={{ py: 3 }}>
-                    <Typography color="text.secondary">No products found. Add one to get started.</Typography>
+                    <Typography color="text.secondary">Nenhum produto encontrado. Adicione um para começar.</Typography>
                   </TableCell>
                 </TableRow>
               ) : (

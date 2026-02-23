@@ -43,13 +43,13 @@ export default function Materials() {
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this raw material?')) {
+    if (window.confirm('Tem certeza de que deseja excluir esta matéria-prima?')) {
       try {
         await deleteMaterial(id).unwrap();
-        toast.success('Raw material deleted successfully');
+        toast.success('Matéria-prima excluída com sucesso');
       } catch (err) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        toast.error((err as any)?.data?.message || 'Failed to delete raw material');
+        toast.error((err as any)?.data?.message || 'Falha ao excluir matéria-prima');
       }
     }
   };
@@ -65,8 +65,8 @@ export default function Materials() {
   if (isError) {
     return (
       <Box textAlign="center" mt={10}>
-        <Typography color="error">Failed to load materials.</Typography>
-        <Button onClick={() => refetch()} sx={{ mt: 2 }}>Retry</Button>
+        <Typography color="error">Falha ao carregar as matérias-primas.</Typography>
+        <Button onClick={() => refetch()} sx={{ mt: 2 }}>Tentar Novamente</Button>
       </Box>
     );
   }
@@ -75,14 +75,14 @@ export default function Materials() {
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Typography variant="h4" fontWeight={700}>
-          Raw Materials
+          Matérias Primas
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleOpenNew}
         >
-          Add Material
+          Adicionar Matéria Prima
         </Button>
       </Box>
 
@@ -92,16 +92,16 @@ export default function Materials() {
             <TableHead>
               <TableRow>
                 <TableCell><b>ID</b></TableCell>
-                <TableCell><b>Name</b></TableCell>
-                <TableCell align="right"><b>Stock Quantity</b></TableCell>
-                <TableCell align="center"><b>Actions</b></TableCell>
+                <TableCell><b>Nome</b></TableCell>
+                <TableCell align="right"><b>Estoque (Qtd)</b></TableCell>
+                <TableCell align="center"><b>Ações</b></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {materials?.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} align="center" sx={{ py: 3 }}>
-                    <Typography color="text.secondary">No raw materials found. Add one to get started.</Typography>
+                    <Typography color="text.secondary">Nenhuma matéria-prima encontrada. Adicione uma para começar.</Typography>
                   </TableCell>
                 </TableRow>
               ) : (

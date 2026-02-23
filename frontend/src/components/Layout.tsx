@@ -33,8 +33,8 @@ export default function Layout() {
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-    { text: 'Products', icon: <InventoryIcon />, path: '/products' },
-    { text: 'Raw Materials', icon: <PrecisionManufacturingIcon />, path: '/materials' },
+    { text: 'Produtos', icon: <InventoryIcon />, path: '/products' },
+    { text: 'Matérias Primas', icon: <PrecisionManufacturingIcon />, path: '/materials' },
   ];
 
   const drawer = (
@@ -110,7 +110,7 @@ export default function Layout() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 600 }}>
-            Production Planning System
+            Sistema de Controle de Produção
           </Typography>
         </Toolbar>
       </AppBar>

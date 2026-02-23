@@ -38,8 +38,8 @@ import type { Product } from './productsApi';
 import { useGetMaterialsQuery } from '../materials/materialsApi';
 
 const schema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  value: z.number().min(0.01, 'Value must be greater than zero'),
+  name: z.string().min(2, 'O nome deve ter no mínimo 2 caracteres'),
+  value: z.number().min(0.01, 'O valor deve ser maior que zero'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -79,16 +79,16 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
     try {
       if (isEditing) {
         await updateProduct({ id: productToEdit.id, body: data }).unwrap();
-        toast.success('Product updated successfully!');
+        toast.success('Produto atualizado com sucesso!');
         onClose(); // In edit mode, we can close (materials are edited inline)
       } else {
         await addProduct(data).unwrap();
-        toast.success('Product created! You can now link materials.');
+        toast.success('Produto criado! Agora você pode vincular materiais.');
         onClose();
       }
     } catch (err) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      toast.error((err as any)?.data?.message || 'Failed to save product');
+      toast.error((err as any)?.data?.message || 'Falha ao salvar produto');
     }
   };
 
@@ -116,10 +116,10 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
       }).unwrap();
       setSelectedMaterialId('');
       setRequiredQty('');
-      toast.success('Material linked successfully!');
+      toast.success('Material vinculado com sucesso!');
     } catch (err) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      toast.error((err as any)?.data?.message || 'Failed to link material');
+      toast.error((err as any)?.data?.message || 'Falha ao vincular material');
     }
   };
 
@@ -127,16 +127,16 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
     if (!productToEdit) return;
     try {
       await deleteAssoc({ id: assocId, productId: productToEdit.id }).unwrap();
-      toast.success('Link removed successfully!');
+      toast.success('Vínculo removido com sucesso!');
     } catch (err) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      toast.error((err as any)?.data?.message || 'Failed to remove link');
+      toast.error((err as any)?.data?.message || 'Falha ao remover vínculo');
     }
   };
 
   return (
     <Dialog open={open} onClose={isLoading ? undefined : onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{isEditing ? 'Edit Product & Recipe' : 'New Product'}</DialogTitle>
+      <DialogTitle>{isEditing ? 'Editar Produto e Receita' : 'Novo Produto'}</DialogTitle>
       
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent dividers>
@@ -147,7 +147,7 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Product Name"
+                  label="Nome do Produto"
                   fullWidth
                   error={!!errors.name}
                   helperText={errors.name?.message}
@@ -161,7 +161,7 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
               render={({ field: { onChange, value, ...field } }) => (
                 <TextField
                   {...field}
-                  label="Product Value (Price)"
+                  label="Valor do Produto (Preço)"
                   InputProps={{
                     startAdornment: <InputAdornment position="start">$</InputAdornment>,
                   }}
@@ -183,13 +183,13 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
               <Box mt={2}>
                 <Divider sx={{ mb: 2 }} />
                 <Typography variant="subtitle1" fontWeight={600} gutterBottom>
-                  Production Recipe (Linked Materials)
+                  Receita de Produção (Materiais Vinculados)
                 </Typography>
 
                 <List dense sx={{ bgcolor: 'background.default', borderRadius: 1, mb: 2 }}>
                   {associations?.length === 0 && (
                     <ListItem>
-                      <ListItemText secondary="No materials linked yet. Add some below." />
+                      <ListItemText secondary="Nenhum material vinculado ainda. Adicione alguns abaixo." />
                     </ListItem>
                   )}
                   {associations?.map((assoc) => (
@@ -203,7 +203,7 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
                     >
                       <ListItemText
                         primary={assoc.rawMaterialName}
-                        secondary={`Requires ${assoc.requiredQuantity} units per product`}
+                        secondary={`Requer ${assoc.requiredQuantity} unidades por produto`}
                       />
                     </ListItem>
                   ))}
@@ -219,13 +219,13 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
                     >
                       {materials?.map((m) => (
                         <MenuItem key={m.id} value={m.id}>
-                          {m.name} (Stock: {m.stockQuantity})
+                          {m.name} (Estoque: {m.stockQuantity})
                         </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
                   <TextField
-                    label="Qty Needed"
+                    label="Qtd. Necessária"
                     size="small"
                     type="number"
                     sx={{ width: 140 }}
@@ -247,10 +247,10 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 2 }}>
           <Button onClick={onClose} disabled={isLoading} color="inherit">
-            Cancel / Close
+            Cancelar / Fechar
           </Button>
           <Button type="submit" variant="contained" disabled={isLoading}>
-            {isLoading ? 'Saving...' : 'Save Product Details'}
+            {isLoading ? 'Salvando...' : 'Salvar Detalhes'}
           </Button>
         </DialogActions>
       </form>

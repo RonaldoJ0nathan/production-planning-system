@@ -19,8 +19,8 @@ import {
 import type { RawMaterial } from './materialsApi';
 
 const schema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  stockQuantity: z.number().min(0, 'Quantity cannot be negative'),
+  name: z.string().min(2, 'O nome deve ter no mínimo 2 caracteres'),
+  stockQuantity: z.number().min(0, 'A quantidade não pode ser negativa'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -66,21 +66,21 @@ export default function MaterialFormDialog({ open, onClose, materialToEdit }: Pr
     try {
       if (isEditing) {
         await updateMaterial({ id: materialToEdit.id, body: data }).unwrap();
-        toast.success('Raw material updated successfully!');
+        toast.success('Matéria-prima atualizada com sucesso!');
       } else {
         await addMaterial(data).unwrap();
-        toast.success('Raw material created successfully!');
+        toast.success('Matéria-prima criada com sucesso!');
       }
       onClose();
     } catch (err) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      toast.error((err as any)?.data?.message || 'Failed to save raw material');
+      toast.error((err as any)?.data?.message || 'Falha ao salvar a matéria-prima');
     }
   };
 
   return (
     <Dialog open={open} onClose={isLoading ? undefined : onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{isEditing ? 'Edit Raw Material' : 'New Raw Material'}</DialogTitle>
+      <DialogTitle>{isEditing ? 'Editar Matéria Prima' : 'Nova Matéria Prima'}</DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent dividers>
           <Stack spacing={3}>
@@ -90,7 +90,7 @@ export default function MaterialFormDialog({ open, onClose, materialToEdit }: Pr
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Material Name"
+                  label="Nome do Material"
                   fullWidth
                   error={!!errors.name}
                   helperText={errors.name?.message}
@@ -105,7 +105,7 @@ export default function MaterialFormDialog({ open, onClose, materialToEdit }: Pr
                 <TextField
                   {...field}
                   type="number"
-                  label="Stock Quantity"
+                  label="Quantidade em Estoque"
                   fullWidth
                   value={value === undefined ? '' : value}
                   onChange={(e) => {
@@ -122,10 +122,10 @@ export default function MaterialFormDialog({ open, onClose, materialToEdit }: Pr
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 2 }}>
           <Button onClick={onClose} disabled={isLoading} color="inherit">
-            Cancel
+            Cancelar
           </Button>
           <Button type="submit" variant="contained" disabled={isLoading}>
-            {isLoading ? 'Saving...' : 'Save Material'}
+            {isLoading ? 'Salvando...' : 'Salvar Material'}
           </Button>
         </DialogActions>
       </form>

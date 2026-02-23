@@ -18,9 +18,9 @@ export default function Home() {
   if (isError) {
     return (
       <Box textAlign="center" mt={10}>
-        <Typography color="error" gutterBottom>Failed to load production suggestions.</Typography>
+        <Typography color="error" gutterBottom>Falha ao carregar as sugestões de produção.</Typography>
         <Typography variant="body2" color="text.secondary" onClick={() => refetch()} sx={{ cursor: 'pointer', textDecoration: 'underline' }}>
-          Click here to retry
+          Clique aqui para tentar novamente
         </Typography>
       </Box>
     );
@@ -32,19 +32,19 @@ export default function Home() {
     <Box>
       <Box mb={4}>
         <Typography variant="h4" fontWeight={700} gutterBottom>
-          Production Dashboard
+          Dashboard de Produção
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Welcome to AutoFlex. Based on your current raw material inventory and recipes, here is the idealized production plan ordered by maximum profitability.
+          Bem-vindo ao AutoFlex. Com base no seu estoque atual de matérias-primas e receitas, aqui está o plano de produção idealizado ordenado pela rentabilidade máxima.
         </Typography>
       </Box>
 
       {!hasSuggestions && (
         <Paper sx={{ p: 5, textAlign: 'center', bgcolor: 'background.paper', borderRadius: 3 }}>
           <PrecisionManufacturingIcon sx={{ fontSize: 60, color: 'text.disabled', mb: 2 }} />
-          <Typography variant="h6" color="text.secondary">No production capacity</Typography>
+          <Typography variant="h6" color="text.secondary">Nenhuma capacidade de produção</Typography>
           <Typography variant="body2" color="text.secondary" mt={1}>
-            You don't have enough materials in stock to manufacture any of your registered products. Try editing material inventory.
+            Você não possui materiais suficientes em estoque para fabricar nenhum dos seus produtos registrados. Tente adicionar inventário de materiais.
           </Typography>
         </Paper>
       )}
@@ -56,7 +56,7 @@ export default function Home() {
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'visible' }}>
                 {index === 0 && (
                   <Chip 
-                    label="Most Profitable" 
+                    label="Mais Rentável" 
                     color="secondary" 
                     icon={<TrendingUpIcon />} 
                     sx={{ position: 'absolute', top: -14, right: 16, fontWeight: 'bold' }} 
@@ -69,22 +69,22 @@ export default function Home() {
                   <Divider sx={{ my: 1.5 }} />
                   
                   <Box display="flex" justifyContent="space-between" mb={1}>
-                    <Typography color="text.secondary" variant="body2">Unit Value:</Typography>
-                    <Typography fontWeight={500}>${sug.productValue.toFixed(2)}</Typography>
+                    <Typography color="text.secondary" variant="body2">Valor Unitário:</Typography>
+                    <Typography fontWeight={500}>R$ {sug.productValue.toFixed(2)}</Typography>
                   </Box>
                   
                   <Box display="flex" justifyContent="space-between" mb={1}>
-                    <Typography color="text.secondary" variant="body2">Max Possible Output:</Typography>
+                    <Typography color="text.secondary" variant="body2">Produção Máxima Possível:</Typography>
                     <Box display="flex" alignItems="center" gap={0.5}>
                       <InventoryIcon fontSize="small" color="primary" />
-                      <Typography fontWeight={700} color="primary.main">{sug.producibleQuantity} units</Typography>
+                      <Typography fontWeight={700} color="primary.main">{sug.producibleQuantity} unidades</Typography>
                     </Box>
                   </Box>
                   
                   <Box display="flex" justifyContent="space-between" mt={2} pt={2} borderTop={1} borderColor="divider">
-                    <Typography fontWeight={600}>Total Potential Revenue:</Typography>
+                    <Typography fontWeight={600}>Receita Total Potencial:</Typography>
                     <Typography fontWeight={800} color="secondary.main" variant="h6" lineHeight={1}>
-                      ${sug.totalValue.toFixed(2)}
+                      R$ {sug.totalValue.toFixed(2)}
                     </Typography>
                   </Box>
 
