@@ -1,0 +1,95 @@
+services:
+
+  db:
+    image: gvenzl/oracle-free:slim
+    container_name: oracle-db
+    restart: always
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    env_file:
+      - .env
+    environment:
+      - ORACLE_RANDOM_PASSWORD=${ORACLE_RANDOM_PASSWORD?Variable not set}
+      - APP_USER=${APP_USER?Variable not set}
+      - APP_USER_PASSWORD=${APP_USER_PASSWORD?Variable not set}
+      - ORACLE_DATABASE=${ORACLE_DATABASE?Variable not set}
+  
+  backend:
+    container_name: backend-api
+    restart: always
+    networks:
+      - traefik-public
+      - default
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
+    environment:
+      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
+      - APP_USER=${APP_USER}
+      - APP_USER_PASSWORD=${APP_USER_PASSWORD}
+      - ORACLE_DATABASE=${ORACLE_DATABASE}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/q/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      network: host
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=8080
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=Host(`${DOMAIN?Variable not set}`) && (PathPrefix(`/api`) || PathPrefix(`/q`))
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.priority=100
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.entrypoints=web
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.rule=Host(`${DOMAIN?Variable not set}`) && (PathPrefix(`/api`) || PathPrefix(`/q`))
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.priority=100
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.entrypoints=websecure
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls.certresolver=le
+
+  
+  frontend:
+    restart: always
+    networks:
+      - traefik-public
+      - default
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      network: host
+      args:
+        - VITE_API_URL=""
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=80
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=Host(`${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.priority=50
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.entrypoints=web
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.rule=Host(`${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.priority=50
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.entrypoints=websecure
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls=true
+
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls.certresolver=le
+    
+volumes:
+  oracle-data:
+
+networks:
+  traefik-public:
+    external: true

@@ -1,0 +1,19 @@
+# Node
+node_modules/
+**/node_modules/
+npm-debug.log*
+
+# Build outputs
+frontend/dist/
+backend/target/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+.dockerignore

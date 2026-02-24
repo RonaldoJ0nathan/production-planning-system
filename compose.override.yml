@@ -1,0 +1,88 @@
+services:
+  proxy:
+    image: traefik:3.6
+    ports:
+      - "80:80"
+      - "8090:8080"
+    command:
+      - --providers.docker
+      - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --accesslog
+      - --log
+      - --log.level=DEBUG
+      - --api.insecure=true
+    labels:
+      - traefik.enable=true
+      - traefik.constraint-label=traefik-public
+      - traefik.http.middlewares.https-redirect.contenttype.autodetect=false
+    networks:
+      - traefik-public
+      - default
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    
+  db:
+    restart: "no"
+    ports:
+      - "1521:1521"
+    
+  backend:
+    restart: "no"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=Host(`${DOMAIN?Variable not set}`) && (PathPrefix(`/api`) || PathPrefix(`/q`))
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.priority=100
+      - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=8080
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      network: host
+    command:
+      - ./mvnw
+      - quarkus:dev
+      - -Dquarkus.http.host=0.0.0.0
+      - -Dquarkus.analytics.disabled=true
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/pom.xml:/app/pom.xml
+    develop:
+      watch:
+        - path: ./backend/src
+          action: sync
+          target: /app/src
+        - path: ./backend/pom.xml
+          action: rebuild
+  
+  frontend:
+    restart: "no"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: build-stage
+      network: host
+    command: npm run dev -- --host
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.ts:/app/vite.config.ts
+    develop:
+      watch:
+        - path: ./frontend
+          action: sync
+          target: /app
+          ignore: node_modules/
+        - path: ./frontend/package.json
+          action: rebuild
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=5173
+    environment:
+      - VITE_API_URL=""
+  
+networks:
+  traefik-public:
+    external: false
+      
