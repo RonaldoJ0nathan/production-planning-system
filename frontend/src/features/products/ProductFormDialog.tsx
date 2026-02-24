@@ -71,7 +71,7 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { name: '', value: 0 },
@@ -100,6 +100,10 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
   const handleNextStep = async (data: FormData) => {
     try {
       if (isEditing && productToEdit) {
+        if (!isDirty) {
+          setActiveStep(1); // Skip API call and go to next step
+          return;
+        }
         await updateProduct({ id: productToEdit.id, body: data }).unwrap();
         toast.success('Produto atualizado com sucesso!');
         setActiveStep(1); // Move to recipe step
@@ -294,7 +298,10 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
           <Box>
             {activeStep === 0 ? (
               <Button type="submit" variant="contained" disabled={isLoading}>
-                {isLoading ? 'Salvando...' : 'Salvar e Ver Receita'}
+                {isEditing && !isDirty
+                  ? 'Ver Receita (Avançar)'
+                  : isLoading
+                  ? 'Salvando...' : 'Salvar e Ver Receita'}
               </Button>
             ) : (
               <Button variant="contained" color="success" onClick={handleFinish}>
