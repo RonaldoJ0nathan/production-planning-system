@@ -64,6 +64,10 @@ services:
       target: build-stage
       network: host
     command: npm run dev -- --host
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.ts:/app/vite.config.ts
     develop:
       watch:
         - path: ./frontend
