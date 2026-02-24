@@ -229,7 +229,7 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
           {activeStep === 1 && (
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Adicione as matérias-primas necessárias para fabricar uma unidade deste produto. Você pode ignorar esta etapa e concluir se preferir.
+                Adicione as matérias-primas necessárias para fabricar uma unidade deste produto. Para salvar a receita e concluir validamente, é necessário pelo menos 1 material vinculado. Caso o produto não possua receita ou você queira adicioná-la em outro momento, basta clicar em <b>Fechar</b>.
               </Typography>
 
               <List dense sx={{ bgcolor: 'background.default', borderRadius: 1, my: 2 }}>
@@ -304,7 +304,12 @@ export default function ProductFormDialog({ open, onClose, productToEdit }: Prop
                   ? 'Salvando...' : 'Salvar e Ver Receita'}
               </Button>
             ) : (
-              <Button variant="contained" color="success" onClick={handleFinish}>
+              <Button 
+                variant="contained" 
+                color="success" 
+                onClick={handleFinish}
+                disabled={!associations?.length}
+              >
                 Concluir Definição
               </Button>
             )}
