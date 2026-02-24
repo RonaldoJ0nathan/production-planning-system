@@ -4,7 +4,7 @@ Esta é a solução integral para o desafio Full-Stack / DevOps AutoFlex, focado
 
 ## Tecnologias Principais
 
-- **Backend:** Java 21, Quarkus, Hibernate, Resteasy (JAX-RS), OracleDB, Docker Testcontainers
+- **Backend:** Java 25, Quarkus, Hibernate, Resteasy (JAX-RS), OracleDB, Docker Testcontainers
 - **Frontend:** React 19, Vite, Redux Toolkit (RTK Query), Material UI, Zod (Validation), React Hook Form, Cypress E2E
 - **DevOps:** Docker Compose (com BuildKit nativo) e Traefik Reverse Proxy gerenciando rotas dinâmicas `/api` e a interface `Vite` nativa.
 
